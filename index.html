@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NOL I.T SYSTEM</title>
+<title>NOL TECHNICAL SYSTEM</title>
 
 <style>
 
@@ -12,7 +12,7 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
@@ -21,10 +21,85 @@ color:white;
 min-height:100vh;
 }
 
+/* LOGIN SCREEN */
+
+.login-screen{
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.login-card{
+background:#1f2937;
+width:100%;
+max-width:420px;
+padding:40px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,.4);
+}
+
+.login-card h1{
+text-align:center;
+margin-bottom:10px;
+}
+
+.login-card p{
+text-align:center;
+color:#bbb;
+margin-bottom:30px;
+}
+
+.input-group{
+margin-bottom:18px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+}
+
+.input-group input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:#111827;
+color:white;
+outline:none;
+}
+
+.login-btn{
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+background:#f59e0b;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+}
+
+.error{
+color:#ef4444;
+margin-top:15px;
+text-align:center;
+display:none;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+display:none;
+}
+
 header{
 padding:30px;
 background:#000;
 text-align:center;
+position:relative;
 }
 
 header h1{
@@ -34,6 +109,19 @@ margin-bottom:10px;
 
 header p{
 color:#ccc;
+}
+
+.logout-btn{
+position:absolute;
+right:20px;
+top:20px;
+padding:10px 16px;
+background:#ef4444;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
 }
 
 .container{
@@ -103,15 +191,59 @@ margin-bottom:10px;
 .stats{
 grid-template-columns:1fr;
 }
+
+.logout-btn{
+position:static;
+margin-top:15px;
+}
 }
 
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+
+<div class="login-screen" id="loginScreen">
+
+<div class="login-card">
+
+<h1>NIGHT OF LAUGHTER</h1>
+<p>I.T MANAGEMENT SYSTEM</p>
+
+<div class="input-group">
+<label>Username</label>
+<input type="text" id="username">
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="password">
+</div>
+
+<button class="login-btn" onclick="login()">
+LOGIN
+</button>
+
+<div class="error" id="errorMsg">
+Invalid username or password
+</div>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div class="dashboard" id="dashboard">
+
 <header>
 <h1>NIGHT OF LAUGHTER</h1>
 <p>I.T MANAGEMENT SYSTEM</p>
+
+<button class="logout-btn" onclick="logout()">
+Logout
+</button>
 </header>
 
 <div class="container">
@@ -158,6 +290,64 @@ grid-template-columns:1fr;
 </div>
 
 </div>
+
+</div>
+
+<script>
+
+const USERNAME = "admin";
+const PASSWORD = "nol2026";
+
+function showDashboard(){
+document.getElementById("loginScreen").style.display="none";
+document.getElementById("dashboard").style.display="block";
+}
+
+function showLogin(){
+document.getElementById("loginScreen").style.display="flex";
+document.getElementById("dashboard").style.display="none";
+}
+
+function login(){
+
+const username =
+document.getElementById("username").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+if(
+username === USERNAME &&
+password === PASSWORD
+){
+
+localStorage.setItem("nolLoggedIn","true");
+
+showDashboard();
+
+}else{
+
+document.getElementById("errorMsg").style.display="block";
+
+}
+
+}
+
+function logout(){
+
+localStorage.removeItem("nolLoggedIn");
+
+showLogin();
+
+}
+
+if(localStorage.getItem("nolLoggedIn")==="true"){
+showDashboard();
+}else{
+showLogin();
+}
+
+</script>
 
 </body>
 </html>

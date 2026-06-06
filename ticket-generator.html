@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Night Of Laughter Comedy - Ticket Generator</title>
+
+<!-- QR CODE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#ececec;
+    min-height:100vh;
+    padding:30px;
+}
+
+.wrapper{
+    max-width:1400px;
+    margin:auto;
+}
+
+.top-section{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:30px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+.title{
+    font-size:32px;
+    font-weight:900;
+    margin-bottom:10px;
+    text-align:center;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:20px;
+    font-size:15px;
+}
+
+textarea{
+    width:100%;
+    height:230px;
+    border:none;
+    outline:none;
+    resize:vertical;
+    padding:20px;
+    border-radius:15px;
+    background:#f7f7f7;
+    font-size:14px;
+    line-height:1.6;
+    border:2px solid #ddd;
+}
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:15px;
+    margin-top:20px;
+}
+
+.main-btn{
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:black;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.main-btn:hover{
+    transform:translateY(-2px);
+    background:#222;
+}
+
+.ticket-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(390px,390px));
+    justify-content:center;
+    gap:35px;
+}
+
+.ticket-wrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.ticket{
+    width:390px;
+    min-height:760px;
+    background:rgb(247, 199, 123);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 12px 35px rgba(0,0,0,0.15);
+    position:relative;
+    border:4px solid #111;
+}
+
+.ticket-header{
+    background:linear-gradient(135deg,#000,#716666);
+    color:white;
+    padding:30px 25px;
+    text-align:center;
+    position:relative;
+}
+
+.ticket-header::after{
+    
+    position:absolute;
+    bottom:-15px;
+    left:0;
+    width:100%;
+    height:30px;
+    background:
+    radial-gradient(circle at 15px 15px, transparent 15px, white 16px);
+    background-size:30px 30px;
+}
+
+.logo{
+    width:170px;
+    height:170px;
+    object-fit:contain;
+    border-radius:50%;
+    padding:0px;
+    margin-bottom:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.organization{
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:1px;
+    line-height:1.4;
+}
+
+.ticket-body{
+    padding:40px 25px 25px;
+    min-height:560px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.event-name{
+    font-size:32px;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:18px;
+    text-transform:uppercase;
+    color:#111;
+}
+
+.event-meta{
+    background:#f5f5f5;
+    border-radius:16px;
+    padding:10px;
+    margin-bottom:28px;
+    line-height:2;
+    font-size:16px;
+}
+.meta-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.owner-name{
+    font-size:34px;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:28px;
+    text-transform:uppercase;
+    word-break:break-word;
+}
+
+.qr-section{
+    display:flex;
+    justify-content:center;
+    margin-bottom:2px;
+}
+
+
+
+.qrcode{
+    width:210px;
+    height:210px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.info-card{
+    background:#f7f7f7;
+    padding:14px;
+    border-radius:14px;
+}
+
+.info-title{
+    font-size:13px;
+    color:#777;
+    margin-bottom:5px;
+}
+
+.info-value{
+    font-size:15px;
+    font-weight:700;
+    word-break:break-word;
+}
+
+.verification{
+    margin-top:25px;
+    text-align:center;
+    font-size:15px;
+    font-weight:700;
+    color:#444;
+}
+
+.badge{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:#fff;
+    color:#000;
+    padding:8px 14px;
+    border-radius:50px;
+    font-size:13px;
+    font-weight:900;
+}
+
+/* OUTSIDE BUTTONS */
+
+.ticket-actions{
+    width:390px;
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.action-btn{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.action-btn:hover{
+    transform:translateY(-2px);
+}
+
+.download-btn{
+    background:#111;
+}
+
+.whatsapp-btn{
+    background:#25D366;
+}
+
+@media(max-width:500px){
+
+    body{
+        padding:15px;
+    }
+
+    .ticket,
+    .ticket-actions{
+        width:100%;
+    }
+
+    .ticket-grid{
+        grid-template-columns:1fr;
+    }
+
+    .event-name{
+        font-size:26px;
+    }
+
+    .owner-name{
+        font-size:28px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="top-section">
+
+        <div class="title">
+            NIGHT OF LAUGHTER COMEDY
+        </div>
+
+        <div class="subtitle">
+            Professional Event Ticket Generator
+        </div>
+
+        <textarea id="spreadsheetData"
+        placeholder="Paste spreadsheet rows here..."></textarea>
+
+        <div class="controls">
+
+            <button class="main-btn" onclick="generateTickets()">
+                GENERATE TICKETS
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="ticket-grid" id="ticketGrid"></div>
+
+</div>
+
+<script>
+
+function getPeopleCount(type){
+
+    type = type.toLowerCase();
+
+    if(type.includes("double")) return 2;
+    if(type.includes("couple")) return 2;
+    if(type.includes("family")) return 4;
+    if(type.includes("group")) return 5;
+
+    return 1;
+}
+
+function generateTickets(){
+
+    const rawData = document.getElementById("spreadsheetData").value.trim();
+
+    const ticketGrid = document.getElementById("ticketGrid");
+
+    ticketGrid.innerHTML = "";
+
+    const organization = "NIGHT OF LAUGHTER COMEDY";
+
+    const logoUrl =
+    "https://i.postimg.cc/QCsSNL4j/PNG-NOL-logo.png";
+
+    if(!rawData){
+
+        alert("Please paste spreadsheet data.");
+        return;
+    }
+
+    const rows = rawData.split("\n");
+
+    rows.forEach((row,index)=>{
+
+        const cols = row.split("\t");
+
+        if(cols.length < 12) return;
+
+        const fullName = cols[1];
+        const phone = cols[3];
+        const ticketType = cols[4];
+        const eventName = cols[6];
+        const eventTime = cols[7];
+        const totalPrice = cols[8];
+        const eventDate = cols[9];
+        const venue = cols[10];
+        const receiptNumber = cols[11];
+
+        const peopleCount = getPeopleCount(ticketType);
+
+        const qrData = `
+Receipt: ${receiptNumber}
+`;
+
+        /* WRAPPER */
+
+        const wrapper = document.createElement("div");
+
+        wrapper.className = "ticket-wrapper";
+
+        wrapper.innerHTML = `
+
+            <!-- TICKET -->
+
+            <div class="ticket" id="ticket-${index}">
+
+                <div class="ticket-header">
+
+                    <div class="badge">
+                        ${ticketType.toUpperCase()}
+                    </div>
+
+                    <img src="${logoUrl}" class="logo">
+
+                    <div class="organization">
+                        ${organization}
+                    </div>
+
+                </div>
+
+                <div class="ticket-body">
+
+                    <div>
+
+                        <div class="event-name">
+                            ${eventName}
+                        </div>
+
+                        <div class="event-meta">
+
+                            <div class="meta-row">
+                                <strong>Date</strong>
+                                <span>${eventDate}</span>
+                            </div>
+
+                            <div class="meta-row">
+                                <strong>Time</strong>
+                                <span>${eventTime}</span>
+                            </div>
+
+                            <div class="meta-row">
+                                <strong>Venue</strong>
+                                <span>${venue}</span>
+                            </div>
+
+                        </div>
+
+                        <div class="owner-name">
+                            ${fullName}
+                        </div>
+
+                        <div class="qr-section">
+
+                            <div class="qr-box">
+                                <div id="qr-${index}" class="qrcode"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <div class="info-grid">
+
+                            <div class="info-card">
+                                <div class="info-title">PRICE</div>
+                                <div class="info-value">
+                                    K${totalPrice}
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="info-title">
+                                    PEOPLE
+                                </div>
+
+                                <div class="info-value">
+                                    ${peopleCount}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="verification">
+                            SHOW THIS QR CODE AT ENTRY
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTONS OUTSIDE TICKET -->
+
+            <div class="ticket-actions">
+
+                <button
+                class="action-btn download-btn"
+                onclick="downloadImage('ticket-${index}','${receiptNumber}')">
+
+                    DOWNLOAD IMAGE
+
+                </button>
+
+                <button
+                class="action-btn whatsapp-btn"
+                onclick="shareWhatsApp('${phone}','${fullName}','${eventName}','${receiptNumber}')">
+
+                    SHARE TO WHATSAPP
+
+                </button>
+
+            </div>
+        `;
+
+        ticketGrid.appendChild(wrapper);
+
+        /* QR CODE */
+
+        new QRCode(document.getElementById(`qr-${index}`),{
+            text: qrData,
+            width:190,
+            height:190,
+            correctLevel:QRCode.CorrectLevel.H
+        });
+
+    });
+
+}
+
+async function downloadImage(ticketId, receiptNumber){
+
+    const ticket = document.getElementById(ticketId);
+
+    const canvas = await html2canvas(ticket,{
+        scale:4,
+        useCORS:true
+    });
+
+    canvas.toBlob(function(blob){
+
+        const link = document.createElement("a");
+
+        link.download = `${receiptNumber}-ticket.png`;
+
+        link.href = URL.createObjectURL(blob);
+
+        link.click();
+
+    });
+
+}
+
+function shareWhatsApp(phone,name,event,receipt){
+
+    // REMOVE SPACES, +, DASHES, ETC
+    phone = phone.replace(/\D/g,'');
+
+    // IF NUMBER STARTS WITH 0
+    // CONVERT TO 260XXXXXXXXX
+    if(phone.startsWith("0")){
+        phone = "260" + phone.substring(1);
+    }
+
+    // IF NUMBER DOES NOT START WITH 260
+    // ADD COUNTRY CODE
+    else if(!phone.startsWith("260")){
+        phone = "260" + phone;
+    }
+
+    const message =
+`🎟️ NIGHT OF LAUGHTER COMEDY
+
+Hello ${name},
+
+Your ticket for ${event} is confirmed.
+
+Please present your QR ticket at entry.`;
+
+    const whatsappUrl =
+    `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, "_blank");
+}
+
+</script>
+
+</script>
+
+</body>
+</html>

@@ -13,7 +13,13 @@
 <meta name="theme-color" content="#0b1220">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
 
 body{
 background:#0b1220;
@@ -21,208 +27,140 @@ color:#e5e7eb;
 min-height:100vh;
 }
 
-/* LOGIN */
-.login-screen{
-display:flex;
-align-items:center;
-justify-content:center;
-min-height:100vh;
-padding:20px;
+/* HEADER */
+header{
+text-align:center;
+padding:25px;
+position:relative;
+border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-.login-card{
-max-width:420px;
-width:100%;
-background:rgba(255,255,255,0.06);
-border:1px solid rgba(255,255,255,0.12);
-border-radius:20px;
-padding:40px;
+header h1{
+font-size:26px;
 }
 
-input{
-width:100%;
-padding:14px;
-margin-top:10px;
-border-radius:10px;
-border:1px solid rgba(255,255,255,0.2);
-background:rgba(0,0,0,0.3);
-color:white;
+header p{
+color:#9ca3af;
+font-size:13px;
+margin-top:5px;
 }
 
-button{
-cursor:pointer;
-}
-
-.login-btn{
-width:100%;
-margin-top:15px;
-padding:14px;
+/* INSTALL BUTTON */
+.install{
+position:absolute;
+right:15px;
+top:15px;
+padding:10px 12px;
 background:#f59e0b;
 border:none;
 border-radius:10px;
 font-weight:700;
+display:none;
+cursor:pointer;
 }
 
-.error{color:red;margin-top:10px;display:none;}
-
-/* DASHBOARD */
-.dashboard{display:none;padding:20px;}
-
-header{
-text-align:center;
-padding:20px;
-position:relative;
+/* CONTAINER */
+.container{
+padding:30px 20px;
+max-width:1100px;
+margin:auto;
 }
 
-.logout{
-position:absolute;
-right:10px;
-top:10px;
-padding:10px;
-background:#ef4444;
-border:none;
-border-radius:8px;
-color:white;
-}
-
+/* CARDS */
 .cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-top:20px;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+margin-top:30px;
 }
 
 .card{
 background:rgba(255,255,255,0.06);
-padding:20px;
-border-radius:15px;
+border:1px solid rgba(255,255,255,0.12);
+padding:25px;
+border-radius:18px;
 text-align:center;
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-5px);
 }
 
 .btn{
 display:inline-block;
-margin-top:10px;
+margin-top:12px;
 padding:10px 15px;
 background:#f59e0b;
-border-radius:10px;
 color:black;
-text-decoration:none;
+border-radius:10px;
 font-weight:700;
+text-decoration:none;
 }
 
-.install{
-position:fixed;
-bottom:20px;
-left:20px;
-padding:12px 15px;
-background:#f59e0b;
-border:none;
-border-radius:10px;
-display:none;
-font-weight:700;
-}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
-<div class="login-card">
-<h2>NOL SYSTEM</h2>
-
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-
-<button class="login-btn" onclick="login()">Login</button>
-<div class="error" id="error">Invalid login</div>
-</div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard">
-
 <header>
-<h2>NIGHT OF LAUGHTER</h2>
-<button class="logout" onclick="logout()">Logout</button>
+<h1>NIGHT OF LAUGHTER</h1>
+<p>IT Management System</p>
 
 <button id="installBtn" class="install">Install App</button>
 </header>
 
+<div class="container">
+
 <div class="cards">
+
 <div class="card">
-<h3>Events</h3>
+<h2>Events Management</h2>
+<p>Create and manage events</p>
 <a class="btn" href="events.html">Open</a>
 </div>
 
 <div class="card">
-<h3>Tickets</h3>
+<h2>Ticket Generator</h2>
+<p>Create QR tickets instantly</p>
 <a class="btn" href="ticket-generator.html">Open</a>
 </div>
 
 <div class="card">
-<h3>Scanner</h3>
+<h2>Ticket Scanner</h2>
+<p>Validate entry tickets</p>
 <a class="btn" href="ticket-scanner.html">Open</a>
 </div>
+
 </div>
 
 </div>
 
 <script>
-const USER="Admin26";
-const PASS="noL2026";
 
-function login(){
-let u=document.getElementById("username").value;
-let p=document.getElementById("password").value;
-
-if(u===USER && p===PASS){
-localStorage.setItem("auth","1");
-showDash();
-}else{
-document.getElementById("error").style.display="block";
-}
-}
-
-function logout(){
-localStorage.removeItem("auth");
-showLogin();
-}
-
-function showDash(){
-document.getElementById("loginScreen").style.display="none";
-document.getElementById("dashboard").style.display="block";
-}
-
-function showLogin(){
-document.getElementById("loginScreen").style.display="flex";
-document.getElementById("dashboard").style.display="none";
-}
-
-if(localStorage.getItem("auth")==="1") showDash(); else showLogin();
-
-/* INSTALL PWA */
+/* PWA INSTALL */
 let deferredPrompt;
 
 window.addEventListener("beforeinstallprompt", (e)=>{
 e.preventDefault();
-deferredPrompt=e;
-document.getElementById("installBtn").style.display="block";
+deferredPrompt = e;
+document.getElementById("installBtn").style.display = "block";
 });
 
 document.getElementById("installBtn").addEventListener("click", async ()=>{
 deferredPrompt.prompt();
 await deferredPrompt.userChoice;
-deferredPrompt=null;
-document.getElementById("installBtn").style.display="none";
+deferredPrompt = null;
+document.getElementById("installBtn").style.display = "none";
 });
 
-/* SW */
+/* SERVICE WORKER */
 if("serviceWorker" in navigator){
 window.addEventListener("load", ()=>{
 navigator.serviceWorker.register("service-worker.js");
 });
 }
+
 </script>
 
 </body>

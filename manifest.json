@@ -1,11 +1,11 @@
 {
   "name": "NOL I.T SYSTEM",
-  "short_name": "NOL IT",
-  "start_url": ".",
+  "short_name": "NOL SYSTEM",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b1220",
   "theme_color": "#0b1220",
-  "description": "Night of Laughter IT Management System",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",

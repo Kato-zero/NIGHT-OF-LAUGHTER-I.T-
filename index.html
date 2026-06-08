@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
 <title>NOL I.T SYSTEM</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b1220">
 
 <style>
@@ -36,7 +37,6 @@ min-height:100vh;
 }
 
 /* LOGIN */
-
 .login-screen{
 display:flex;
 align-items:center;
@@ -91,7 +91,7 @@ position:relative;
 
 input{
 width:100%;
-padding:14px 14px;
+padding:14px;
 border-radius:14px;
 border:1px solid var(--stroke);
 background:rgba(0,0,0,0.25);
@@ -144,13 +144,11 @@ font-size:13px;
 }
 
 /* DASHBOARD */
-
 .dashboard{
 display:none;
 }
 
 /* HEADER */
-
 header{
 padding:26px;
 text-align:center;
@@ -182,15 +180,9 @@ background:rgba(239,68,68,0.15);
 color:#f87171;
 cursor:pointer;
 font-weight:600;
-transition:.2s;
-}
-
-.logout-btn:hover{
-background:rgba(239,68,68,0.25);
 }
 
 /* CONTAINER */
-
 .container{
 max-width:1100px;
 margin:auto;
@@ -198,7 +190,6 @@ padding:40px 20px;
 }
 
 /* STATS */
-
 .stats{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
@@ -212,11 +203,6 @@ border:1px solid var(--stroke);
 border-radius:18px;
 padding:20px;
 text-align:center;
-transition:.2s;
-}
-
-.stat:hover{
-transform:translateY(-4px);
 }
 
 .stat .icon{
@@ -230,7 +216,6 @@ color:var(--muted);
 }
 
 /* CARDS */
-
 .cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -243,7 +228,6 @@ border:1px solid var(--stroke);
 border-radius:20px;
 padding:26px;
 text-align:center;
-transition:.25s;
 }
 
 .card:hover{
@@ -270,20 +254,6 @@ background:var(--accent);
 color:black;
 font-weight:700;
 text-decoration:none;
-transition:.2s;
-}
-
-.btn:hover{
-transform:scale(1.05);
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-.logout-btn{
-position:static;
-margin-top:10px;
-}
 }
 
 </style>
@@ -306,22 +276,17 @@ margin-top:10px;
 
 <div class="input-group">
 <label>Password</label>
-
 <div class="input-wrapper">
 <input type="password" id="password">
-<button class="toggle-btn" onclick="togglePassword()">Show</button>
+<button class="toggle-btn" onclick="togglePassword(event)">Show</button>
 </div>
-
 </div>
 
 <button class="login-btn" onclick="login()">Sign in</button>
 
-<div class="error" id="errorMsg">
-Invalid credentials
-</div>
+<div class="error" id="errorMsg">Invalid credentials</div>
 
 </div>
-
 </div>
 
 <!-- DASHBOARD -->
@@ -336,7 +301,6 @@ Invalid credentials
 <div class="container">
 
 <div class="stats">
-
 <div class="stat">
 <div class="icon">📅</div>
 <div>Events</div>
@@ -351,7 +315,6 @@ Invalid credentials
 <div class="icon">📲</div>
 <div>Scanner</div>
 </div>
-
 </div>
 
 <div class="cards">
@@ -375,9 +338,7 @@ Invalid credentials
 </div>
 
 </div>
-
 </div>
-
 </div>
 
 <script>
@@ -390,13 +351,15 @@ function login(){
 const u = document.getElementById("username").value.trim();
 const p = document.getElementById("password").value;
 
+const error = document.getElementById("errorMsg");
+
 if(u === USER && p === PASS){
 localStorage.setItem("auth","true");
+error.style.display = "none";
 showDashboard();
 }else{
-document.getElementById("errorMsg").style.display="block";
+error.style.display = "block";
 }
-
 }
 
 function logout(){
@@ -414,10 +377,10 @@ document.getElementById("loginScreen").style.display="flex";
 document.getElementById("dashboard").style.display="none";
 }
 
-function togglePassword(){
+function togglePassword(e){
 
 const input = document.getElementById("password");
-const btn = event.target;
+const btn = e.target;
 
 if(input.type === "password"){
 input.type = "text";
@@ -426,23 +389,27 @@ btn.innerText = "Hide";
 input.type = "password";
 btn.innerText = "Show";
 }
-
 }
 
+function init(){
 if(localStorage.getItem("auth")==="true"){
 showDashboard();
 }else{
 showLogin();
 }
+}
+
+window.onload = init;
 
 </script>
-  <script>
+
+<script>
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(reg => console.log("SW registered"))
-      .catch(err => console.log("SW failed", err));
-  });
+window.addEventListener("load", () => {
+navigator.serviceWorker.register("service-worker.js")
+.then(() => console.log("SW registered"))
+.catch(err => console.log("SW failed", err));
+});
 }
 </script>
 

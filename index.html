@@ -8,31 +8,16 @@
 <title>NOL I.T SYSTEM</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b1220">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter', sans-serif;
-}
-
-:root{
---bg:#0b1220;
---card:rgba(255,255,255,0.06);
---stroke:rgba(255,255,255,0.12);
---text:#e5e7eb;
---muted:#9ca3af;
---accent:#f59e0b;
---danger:#ef4444;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
-background:radial-gradient(circle at top, #111827, #0b1220);
-color:var(--text);
+background:#0b1220;
+color:#e5e7eb;
 min-height:100vh;
 }
 
@@ -46,216 +31,96 @@ padding:20px;
 }
 
 .login-card{
-width:100%;
 max-width:420px;
-background:var(--card);
-border:1px solid var(--stroke);
-backdrop-filter: blur(18px);
-border-radius:24px;
+width:100%;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.12);
+border-radius:20px;
 padding:40px;
-box-shadow:0 20px 60px rgba(0,0,0,0.4);
-animation:fadeUp .5s ease;
-}
-
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(20px);}
-to{opacity:1;transform:translateY(0);}
-}
-
-.login-card h1{
-font-size:28px;
-text-align:center;
-margin-bottom:8px;
-}
-
-.login-card p{
-text-align:center;
-color:var(--muted);
-margin-bottom:30px;
-}
-
-.input-group{
-margin-bottom:18px;
-}
-
-label{
-font-size:13px;
-color:var(--muted);
-display:block;
-margin-bottom:8px;
-}
-
-.input-wrapper{
-position:relative;
 }
 
 input{
 width:100%;
 padding:14px;
-border-radius:14px;
-border:1px solid var(--stroke);
-background:rgba(0,0,0,0.25);
+margin-top:10px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.2);
+background:rgba(0,0,0,0.3);
 color:white;
-outline:none;
-transition:.2s;
 }
 
-input:focus{
-border-color:var(--accent);
-box-shadow:0 0 0 3px rgba(245,158,11,0.15);
-}
-
-.toggle-btn{
-position:absolute;
-right:10px;
-top:50%;
-transform:translateY(-50%);
-background:none;
-border:none;
-color:var(--accent);
-font-weight:600;
+button{
 cursor:pointer;
-font-size:12px;
 }
 
 .login-btn{
 width:100%;
-margin-top:10px;
+margin-top:15px;
 padding:14px;
+background:#f59e0b;
 border:none;
-border-radius:14px;
-background:linear-gradient(135deg, #f59e0b, #f97316);
-color:black;
+border-radius:10px;
 font-weight:700;
-cursor:pointer;
-transition:.2s;
 }
 
-.login-btn:hover{
-transform:translateY(-2px);
-}
-
-.error{
-color:var(--danger);
-text-align:center;
-margin-top:12px;
-display:none;
-font-size:13px;
-}
+.error{color:red;margin-top:10px;display:none;}
 
 /* DASHBOARD */
-.dashboard{
-display:none;
-}
+.dashboard{display:none;padding:20px;}
 
-/* HEADER */
 header{
-padding:26px;
 text-align:center;
-background:rgba(0,0,0,0.4);
-backdrop-filter: blur(10px);
-border-bottom:1px solid var(--stroke);
+padding:20px;
 position:relative;
 }
 
-header h1{
-font-size:26px;
-font-weight:700;
-}
-
-header p{
-color:var(--muted);
-font-size:13px;
-margin-top:4px;
-}
-
-.logout-btn{
+.logout{
 position:absolute;
-right:20px;
-top:20px;
-padding:10px 14px;
+right:10px;
+top:10px;
+padding:10px;
+background:#ef4444;
 border:none;
-border-radius:10px;
-background:rgba(239,68,68,0.15);
-color:#f87171;
-cursor:pointer;
-font-weight:600;
+border-radius:8px;
+color:white;
 }
 
-/* CONTAINER */
-.container{
-max-width:1100px;
-margin:auto;
-padding:40px 20px;
-}
-
-/* STATS */
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:16px;
-margin-bottom:40px;
-}
-
-.stat{
-background:var(--card);
-border:1px solid var(--stroke);
-border-radius:18px;
-padding:20px;
-text-align:center;
-}
-
-.stat .icon{
-font-size:22px;
-margin-bottom:10px;
-}
-
-.stat div{
-font-size:13px;
-color:var(--muted);
-}
-
-/* CARDS */
 .cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-top:20px;
 }
 
 .card{
-background:var(--card);
-border:1px solid var(--stroke);
-border-radius:20px;
-padding:26px;
+background:rgba(255,255,255,0.06);
+padding:20px;
+border-radius:15px;
 text-align:center;
-}
-
-.card:hover{
-transform:translateY(-6px);
-border-color:rgba(245,158,11,0.4);
-}
-
-.card h2{
-font-size:18px;
-margin-bottom:10px;
-}
-
-.card p{
-color:var(--muted);
-font-size:13px;
-margin-bottom:18px;
 }
 
 .btn{
 display:inline-block;
-padding:12px 18px;
-border-radius:12px;
-background:var(--accent);
+margin-top:10px;
+padding:10px 15px;
+background:#f59e0b;
+border-radius:10px;
 color:black;
-font-weight:700;
 text-decoration:none;
+font-weight:700;
 }
 
+.install{
+position:fixed;
+bottom:20px;
+left:20px;
+padding:12px 15px;
+background:#f59e0b;
+border:none;
+border-radius:10px;
+display:none;
+font-weight:700;
+}
 </style>
 </head>
 
@@ -263,29 +128,14 @@ text-decoration:none;
 
 <!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
-
 <div class="login-card">
+<h2>NOL SYSTEM</h2>
 
-<h1>NOL SYSTEM</h1>
-<p>Secure Admin Access</p>
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
 
-<div class="input-group">
-<label>Username</label>
-<input type="text" id="username">
-</div>
-
-<div class="input-group">
-<label>Password</label>
-<div class="input-wrapper">
-<input type="password" id="password">
-<button class="toggle-btn" onclick="togglePassword(event)">Show</button>
-</div>
-</div>
-
-<button class="login-btn" onclick="login()">Sign in</button>
-
-<div class="error" id="errorMsg">Invalid credentials</div>
-
+<button class="login-btn" onclick="login()">Login</button>
+<div class="error" id="error">Invalid login</div>
 </div>
 </div>
 
@@ -293,72 +143,44 @@ text-decoration:none;
 <div class="dashboard" id="dashboard">
 
 <header>
-<h1>NIGHT OF LAUGHTER</h1>
-<p>IT Management System</p>
-<button class="logout-btn" onclick="logout()">Logout</button>
+<h2>NIGHT OF LAUGHTER</h2>
+<button class="logout" onclick="logout()">Logout</button>
+
+<button id="installBtn" class="install">Install App</button>
 </header>
 
-<div class="container">
-
-<div class="stats">
-<div class="stat">
-<div class="icon">📅</div>
-<div>Events</div>
-</div>
-
-<div class="stat">
-<div class="icon">🎟️</div>
-<div>Tickets</div>
-</div>
-
-<div class="stat">
-<div class="icon">📲</div>
-<div>Scanner</div>
-</div>
-</div>
-
 <div class="cards">
-
 <div class="card">
-<h2>Events Management</h2>
-<p>Create and manage events</p>
-<a href="events.html" class="btn">Open</a>
+<h3>Events</h3>
+<a class="btn" href="events.html">Open</a>
 </div>
 
 <div class="card">
-<h2>Ticket Generator</h2>
-<p>Create QR tickets instantly</p>
-<a href="ticket-generator.html" class="btn">Open</a>
+<h3>Tickets</h3>
+<a class="btn" href="ticket-generator.html">Open</a>
 </div>
 
 <div class="card">
-<h2>Ticket Scanner</h2>
-<p>Validate entry tickets</p>
-<a href="ticket-scanner.html" class="btn">Open</a>
+<h3>Scanner</h3>
+<a class="btn" href="ticket-scanner.html">Open</a>
+</div>
 </div>
 
-</div>
-</div>
 </div>
 
 <script>
-
-const USER = "Admin26";
-const PASS = "noL2026";
+const USER="Admin26";
+const PASS="noL2026";
 
 function login(){
+let u=document.getElementById("username").value;
+let p=document.getElementById("password").value;
 
-const u = document.getElementById("username").value.trim();
-const p = document.getElementById("password").value;
-
-const error = document.getElementById("errorMsg");
-
-if(u === USER && p === PASS){
-localStorage.setItem("auth","true");
-error.style.display = "none";
-showDashboard();
+if(u===USER && p===PASS){
+localStorage.setItem("auth","1");
+showDash();
 }else{
-error.style.display = "block";
+document.getElementById("error").style.display="block";
 }
 }
 
@@ -367,7 +189,7 @@ localStorage.removeItem("auth");
 showLogin();
 }
 
-function showDashboard(){
+function showDash(){
 document.getElementById("loginScreen").style.display="none";
 document.getElementById("dashboard").style.display="block";
 }
@@ -377,38 +199,28 @@ document.getElementById("loginScreen").style.display="flex";
 document.getElementById("dashboard").style.display="none";
 }
 
-function togglePassword(e){
+if(localStorage.getItem("auth")==="1") showDash(); else showLogin();
 
-const input = document.getElementById("password");
-const btn = e.target;
+/* INSTALL PWA */
+let deferredPrompt;
 
-if(input.type === "password"){
-input.type = "text";
-btn.innerText = "Hide";
-}else{
-input.type = "password";
-btn.innerText = "Show";
-}
-}
+window.addEventListener("beforeinstallprompt", (e)=>{
+e.preventDefault();
+deferredPrompt=e;
+document.getElementById("installBtn").style.display="block";
+});
 
-function init(){
-if(localStorage.getItem("auth")==="true"){
-showDashboard();
-}else{
-showLogin();
-}
-}
+document.getElementById("installBtn").addEventListener("click", async ()=>{
+deferredPrompt.prompt();
+await deferredPrompt.userChoice;
+deferredPrompt=null;
+document.getElementById("installBtn").style.display="none";
+});
 
-window.onload = init;
-
-</script>
-
-<script>
-if ("serviceWorker" in navigator) {
-window.addEventListener("load", () => {
-navigator.serviceWorker.register("service-worker.js")
-.then(() => console.log("SW registered"))
-.catch(err => console.log("SW failed", err));
+/* SW */
+if("serviceWorker" in navigator){
+window.addEventListener("load", ()=>{
+navigator.serviceWorker.register("service-worker.js");
 });
 }
 </script>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>NOL I.T SYSTEM</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1220">
+
+<style>
+/* ============ GLOBAL RESET / SHELL ============ */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0b1220;color:#e5e7eb;min-height:100vh;font-family:'Inter',sans-serif;}
+
+.topbar{border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:0;background:#0b1220;z-index:50;}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 4px;max-width:1100px;margin:auto;}
+.topbar-inner h1{font-size:18px;letter-spacing:.3px;}
+.topbar-inner p{color:#9ca3af;font-size:12px;margin-top:3px;}
+
+.install-btn{padding:8px 12px;background:#f59e0b;border:none;border-radius:10px;font-weight:700;display:none;cursor:pointer;color:#111;font-size:13px;}
+
+.tabnav{display:flex;gap:6px;max-width:1100px;margin:auto;padding:10px 20px 14px;overflow-x:auto;}
+.tab-btn{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#9ca3af;padding:9px 16px;border-radius:10px;font-weight:600;cursor:pointer;white-space:nowrap;font-size:13px;font-family:'Inter',sans-serif;transition:.15s;}
+.tab-btn:hover{border-color:rgba(255,255,255,0.3);color:#e5e7eb;}
+.tab-btn.active{background:#f59e0b;color:#111;border-color:#f59e0b;}
+
+main{max-width:1100px;margin:auto;min-height:calc(100vh - 110px);}
+.view{display:none;}
+.view.active{display:block;}
+
+/* ============ DASHBOARD VIEW ============ */
+#view-dashboard{padding:30px 20px 60px;}
+#view-dashboard .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:10px;}
+#view-dashboard .card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:25px;border-radius:18px;text-align:center;transition:.2s;}
+#view-dashboard .card:hover{transform:translateY(-5px);}
+#view-dashboard .card h2{font-size:18px;margin-bottom:6px;}
+#view-dashboard .card p{color:#9ca3af;font-size:13px;}
+#view-dashboard .btn{display:inline-block;margin-top:12px;padding:10px 15px;background:#f59e0b;color:black;border-radius:10px;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-size:14px;font-family:'Inter',sans-serif;}
+
+/* ============ EVENTS VIEW ============ */
+#view-events{background:#f5f5f5;color:#111;padding:20px;font-family:Arial,sans-serif;border-radius:0 0 18px 18px;}
+#view-events .container{max-width:1300px;margin:auto;}
+#view-events .card{background:white;padding:25px;border-radius:15px;margin-bottom:20px;box-shadow:0 5px 15px rgba(0,0,0,0.08);}
+#view-events h2{margin-bottom:20px;}
+#view-events .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+#view-events .full-width{grid-column:1/-1;}
+#view-events input,
+#view-events textarea,
+#view-events select{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:Arial,sans-serif;}
+#view-events textarea{height:120px;resize:vertical;}
+#view-events .button-group{display:flex;gap:10px;margin-top:15px;}
+#view-events button{padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-family:Arial,sans-serif;}
+#view-events .save-btn{background:#111;color:white;}
+#view-events .clear-btn{background:#e5e5e5;}
+#view-events .edit-btn{background:#2563eb;color:white;}
+#view-events .delete-btn{background:#dc2626;color:white;}
+#view-events .actions{display:flex;gap:8px;margin-top:2px;}
+#view-events .actions button{flex:1;}
+#view-events .search-box{margin-bottom:15px;}
+#view-events .status{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold;display:inline-block;flex-shrink:0;}
+#view-events .upcoming{background:#dcfce7;color:#166534;}
+#view-events .ended{background:#fee2e2;color:#991b1b;}
+
+/* Expandable event list */
+#view-events .event-list{display:flex;flex-direction:column;gap:10px;}
+#view-events .event-item{border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;background:#fff;}
+#view-events .event-summary{display:flex;align-items:center;gap:12px;padding:12px;cursor:pointer;user-select:none;}
+#view-events .event-summary:hover{background:#fafafa;}
+#view-events .event-thumb{width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#eee;}
+#view-events .event-summary-info{flex:1;min-width:0;}
+#view-events .event-summary-name{font-weight:bold;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#view-events .event-summary-meta{font-size:12px;color:#666;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#view-events .chevron{width:18px;height:18px;flex-shrink:0;color:#999;transition:transform .2s ease;}
+#view-events .event-item.expanded .chevron{transform:rotate(180deg);}
+#view-events .event-details{max-height:0;overflow:hidden;transition:max-height .25s ease;padding:0 16px;}
+#view-events .event-item.expanded .event-details{max-height:700px;padding:14px 16px 16px;border-top:1px solid #eee;}
+#view-events .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:10px;margin-bottom:14px;}
+#view-events .detail-item .detail-label{display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.3px;}
+#view-events .detail-item .detail-value{display:block;font-size:14px;font-weight:600;margin-top:2px;color:#111;}
+#view-events .event-description{font-size:13px;color:#444;margin-bottom:14px;line-height:1.5;white-space:pre-wrap;}
+#view-events .empty-events{text-align:center;padding:30px;color:#999;}
+@media(max-width:900px){
+  #view-events .form-grid{grid-template-columns:1fr;}
+}
+
+/* ============ SCANNER VIEW ============ */
+#view-scanner{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;border-radius:0 0 18px 18px;}
+#view-scanner .container{max-width:500px;margin:0 auto;}
+#view-scanner .header{text-align:center;margin-bottom:20px;}
+#view-scanner .header h1{font-size:26px;background:linear-gradient(135deg,#fff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px;}
+#view-scanner .header p{color:#a1a1aa;font-size:14px;}
+
+#view-scanner .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+#view-scanner .stat-card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:16px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,0.2);}
+#view-scanner .stat-card svg{width:24px;height:24px;margin-bottom:6px;}
+#view-scanner .stat-number{font-size:28px;font-weight:bold;display:block;}
+#view-scanner .stat-label{font-size:11px;color:#a1a1aa;text-transform:uppercase;letter-spacing:.5px;}
+
+#view-scanner .button-group{display:flex;gap:12px;margin-bottom:20px;}
+#view-scanner .btn{flex:1;padding:14px;font-size:14px;font-weight:600;border:none;border-radius:50px;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;}
+#view-scanner .btn svg{width:18px;height:18px;}
+#view-scanner .btn-start{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;}
+#view-scanner .btn-start:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 20px rgba(139,92,246,.4);}
+#view-scanner .btn-stop{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;}
+#view-scanner .btn-stop:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 20px rgba(239,68,68,.4);}
+#view-scanner .btn-clear{background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;}
+#view-scanner .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+#view-scanner .scanner-area{background:rgba(0,0,0,.3);border-radius:24px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,255,255,.1);}
+#view-scanner #reader{width:100%;max-width:350px;margin:0 auto;border-radius:16px;overflow:hidden;}
+#view-scanner #reader video{border-radius:16px;}
+#view-scanner .scan-status{text-align:center;margin-top:12px;font-size:13px;color:#a1a1aa;display:flex;align-items:center;justify-content:center;gap:8px;}
+#view-scanner .status-active{color:#22c55e;}
+#view-scanner .status-cooldown{color:#f59e0b;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+#view-scanner .cooldown-progress{margin-top:12px;}
+#view-scanner .progress-bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+#view-scanner .progress-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);width:0%;transition:width .1s linear;border-radius:2px;}
+#view-scanner .cooldown-text{text-align:center;font-size:12px;color:#f59e0b;margin-top:6px;}
+
+#view-scanner .result-card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:20px;margin-bottom:20px;transition:all .3s ease;border:1px solid rgba(255,255,255,.2);}
+#view-scanner .result-valid{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(34,197,94,.1));border-left:4px solid #22c55e;}
+#view-scanner .result-invalid{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(239,68,68,.1));border-left:4px solid #ef4444;}
+#view-scanner .result-used{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.1));border-left:4px solid #f59e0b;}
+#view-scanner .result-header{display:flex;align-items:center;gap:10px;margin-bottom:15px;}
+#view-scanner .result-header svg{width:28px;height:28px;}
+#view-scanner .result-title{font-size:18px;font-weight:bold;}
+#view-scanner .ticket-details{display:flex;flex-direction:column;gap:10px;}
+#view-scanner .detail-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+#view-scanner .detail-row svg{width:18px;height:18px;opacity:.7;flex-shrink:0;}
+#view-scanner .detail-label{font-size:13px;opacity:.7;min-width:70px;}
+#view-scanner .detail-value{font-size:14px;font-weight:500;word-break:break-word;flex:1;}
+
+#view-scanner .history-section{background:rgba(0,0,0,.3);border-radius:20px;padding:16px;border:1px solid rgba(255,255,255,.1);}
+#view-scanner .history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.1);}
+#view-scanner .history-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px;}
+#view-scanner .history-title svg{width:20px;height:20px;}
+#view-scanner .history-list{max-height:300px;overflow-y:auto;}
+#view-scanner .history-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:rgba(255,255,255,.05);border-radius:12px;margin-bottom:8px;transition:all .2s ease;}
+#view-scanner .history-item:hover{background:rgba(255,255,255,.1);}
+#view-scanner .history-info{flex:1;}
+#view-scanner .history-name{font-weight:500;font-size:14px;}
+#view-scanner .history-time{font-size:11px;opacity:.6;}
+#view-scanner .history-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+#view-scanner .badge-valid{background:rgba(34,197,94,.2);color:#22c55e;}
+#view-scanner .badge-used{background:rgba(245,158,11,.2);color:#f59e0b;}
+#view-scanner .badge-invalid{background:rgba(239,68,68,.2);color:#ef4444;}
+#view-scanner .empty-history{text-align:center;padding:30px;opacity:.5;}
+#view-scanner .history-list::-webkit-scrollbar{width:4px;}
+#view-scanner .history-list::-webkit-scrollbar-track{background:rgba(255,255,255,.1);border-radius:2px;}
+#view-scanner .history-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.3);border-radius:2px;}
+
+/* ============ RESPONSIVE / MOBILE ============ */
+html{-webkit-text-size-adjust:100%;}
+img,svg{max-width:100%;}
+
+@media(max-width:600px){
+  .topbar-inner{padding:14px 14px 4px;}
+  .topbar-inner h1{font-size:16px;}
+  .topbar-inner p{font-size:11px;}
+  .install-btn{padding:7px 10px;font-size:12px;}
+  .tabnav{padding:8px 14px 12px;gap:5px;}
+  .tab-btn{padding:8px 12px;font-size:12px;}
+
+  #view-dashboard{padding:20px 14px 40px;}
+  #view-dashboard .cards{grid-template-columns:1fr;gap:14px;}
+  #view-dashboard .card{padding:20px;}
+
+  #view-events{padding:14px;}
+  #view-events .card{padding:16px;}
+  #view-events input,
+  #view-events textarea,
+  #view-events select{font-size:16px;padding:11px;}
+  #view-events .button-group{flex-direction:column;}
+  #view-events .button-group button{width:100%;}
+  #view-events .event-summary-meta{max-width:180px;}
+
+  #view-scanner{padding:14px;}
+  #view-scanner .header h1{font-size:22px;}
+  #view-scanner .stats-grid{gap:8px;}
+  #view-scanner .stat-card{padding:10px 6px;}
+  #view-scanner .stat-number{font-size:22px;}
+  #view-scanner .stat-label{font-size:9px;}
+  #view-scanner .button-group{flex-wrap:wrap;}
+  #view-scanner .btn{flex:1 1 100%;padding:13px;font-size:13px;}
+  #view-scanner .scanner-area{padding:10px;}
+}
+
+@media(max-width:380px){
+  #view-scanner .stats-grid{grid-template-columns:1fr 1fr 1fr;}
+  #view-scanner .stat-number{font-size:18px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <h1>NIGHT OF LAUGHTER</h1>
+      <p>IT Management System</p>
+    </div>
+    <button id="installBtn" class="install-btn">Install App</button>
+  </div>
+  <nav class="tabnav">
+    <button class="tab-btn active" data-view="dashboard" onclick="switchView('dashboard')">🏠 Dashboard</button>
+    <button class="tab-btn" data-view="events" onclick="switchView('events')">🎟️ Events</button>
+    <button class="tab-btn" data-view="scanner" onclick="switchView('scanner')">📷 Scanner</button>
+  </nav>
+</div>
+
+<main>
+
+<!-- ============ DASHBOARD VIEW ============ -->
+<section id="view-dashboard" class="view active">
+  <div class="cards">
+    <div class="card">
+      <h2>Events Management</h2>
+      <p>Create and manage events</p>
+      <button class="btn" onclick="switchView('events')">Open</button>
+    </div>
+    <div class="card">
+      <h2>Ticket Generator</h2>
+      <p>Create QR tickets instantly</p>
+      <button class="btn" disabled title="Not merged yet" style="opacity:.5;cursor:not-allowed;">Coming Soon</button>
+    </div>
+    <div class="card">
+      <h2>Ticket Scanner</h2>
+      <p>Validate entry tickets</p>
+      <button class="btn" onclick="switchView('scanner')">Open</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EVENTS VIEW ============ -->
+<section id="view-events" class="view">
+<div class="container">
+
+<div class="card">
+<h2>Event Management</h2>
+
+<div class="form-grid">
+<input id="ev-name" placeholder="Event Name">
+<input id="ev-type" placeholder="Event Type">
+<input type="date" id="ev-date">
+<input type="time" id="ev-time">
+<input id="ev-venue" placeholder="Venue">
+<input id="ev-image" placeholder="Image URL">
+<input id="ev-single" placeholder="Single Price">
+<input id="ev-double" placeholder="Double Price">
+<input id="ev-vip" placeholder="VIP Price">
+<div class="full-width">
+<textarea id="ev-description" placeholder="Description"></textarea>
+</div>
+</div>
+
+<div class="button-group">
+<button id="ev-saveBtn" class="save-btn" onclick="saveEvent()">Save Event</button>
+<button class="clear-btn" onclick="clearForm()">Clear</button>
+</div>
+</div>
+
+<div class="card">
+<h2>Events List</h2>
+<input type="text" id="ev-search" class="search-box" placeholder="Search events..." onkeyup="filterEvents()">
+<div class="event-list" id="eventsTable"></div>
+</div>
+
+</div>
+</section>
+
+<!-- ============ SCANNER VIEW ============ -->
+<section id="view-scanner" class="view">
+<div class="container">
+
+<div class="header">
+<h1>Event Ticket Scanner</h1>
+<p>Professional Check-in System</p>
+</div>
+
+<div class="stats-grid">
+<div class="stat-card">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H4v12h16v-4M12 2v20M2 12h4M18 12h4"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+<span class="stat-number" id="totalScans">0</span>
+<span class="stat-label">Total Scans</span>
+</div>
+<div class="stat-card">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+<span class="stat-number" id="validScans">0</span>
+<span class="stat-label">Valid</span>
+</div>
+<div class="stat-card">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+<span class="stat-number" id="invalidScans">0</span>
+<span class="stat-label">Invalid/Used</span>
+</div>
+</div>
+
+<div class="button-group">
+<button class="btn btn-start" onclick="startScan()" id="startBtn">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+Start Scan
+</button>
+<button class="btn btn-stop" onclick="stopScan()" id="stopBtn" disabled>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="12" height="16" rx="1"/></svg>
+Stop
+</button>
+<button class="btn btn-clear" onclick="clearHistory()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+Clear
+</button>
+</div>
+
+<div class="scanner-area">
+<div id="reader"></div>
+<div class="scan-status" id="scanStatus">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+<span id="statusText">Ready to scan</span>
+</div>
+<div class="cooldown-progress" id="cooldownContainer" style="display:none;">
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="cooldown-text" id="cooldownText"></div>
+</div>
+</div>
+
+<div id="resultCard" class="result-card" style="display:none;">
+<div class="result-header">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+<span class="result-title" id="resultTitle">Ticket Validated</span>
+</div>
+<div class="ticket-details" id="resultDetails"></div>
+</div>
+
+<div class="history-section">
+<div class="history-header">
+<div class="history-title">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+Scan History
+</div>
+<span style="font-size:12px;opacity:.6;" id="historyCount">0 records</span>
+</div>
+<div class="history-list" id="historyList">
+<div class="empty-history">No scans yet</div>
+</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<script>
+/* ============ TAB NAVIGATION ============ */
+function switchView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.tab-btn[data-view="'+view+'"]').classList.add('active');
+  try{ localStorage.setItem('nolActiveView', view); }catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+(function restoreView(){
+  try{
+    const saved = localStorage.getItem('nolActiveView');
+    if(saved && document.getElementById('view-'+saved)) switchView(saved);
+  }catch(e){}
+})();
+
+/* ============ PWA INSTALL ============ */
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt", (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById("installBtn").style.display = "block";
+});
+document.getElementById("installBtn").addEventListener("click", async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById("installBtn").style.display = "none";
+});
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("service-worker.js");
+  });
+}
+
+/* ============ EVENTS MODULE ============ */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9jrIHnZDQPkIeA6BTAyfzSKqipCaMddiJ3ZvDfxXtkldiH-k0PY1NkEVtGzylJlHl8A/exec";
+
+let editingRow = null;
+let allEvents = [];
+
+function clearForm(){
+  document.getElementById("ev-name").value="";
+  document.getElementById("ev-type").value="";
+  document.getElementById("ev-date").value="";
+  document.getElementById("ev-time").value="";
+  document.getElementById("ev-venue").value="";
+  document.getElementById("ev-image").value="";
+  document.getElementById("ev-description").value="";
+  document.getElementById("ev-single").value="";
+  document.getElementById("ev-double").value="";
+  document.getElementById("ev-vip").value="";
+  editingRow = null;
+  document.getElementById("ev-saveBtn").innerText = "Save Event";
+}
+
+function saveEvent(){
+  const data = {
+    action: editingRow ? "update" : "add",
+    row: editingRow,
+    name: document.getElementById("ev-name").value,
+    type: document.getElementById("ev-type").value,
+    date: document.getElementById("ev-date").value,
+    time: document.getElementById("ev-time").value,
+    venue: document.getElementById("ev-venue").value,
+    image: document.getElementById("ev-image").value,
+    description: document.getElementById("ev-description").value,
+    single: document.getElementById("ev-single").value,
+    double: document.getElementById("ev-double").value,
+    vip: document.getElementById("ev-vip").value
+  };
+  fetch(SCRIPT_URL,{ method:"POST", body:JSON.stringify(data) })
+    .then(r=>r.json())
+    .then(()=>{
+      alert(editingRow ? "Event Updated Successfully" : "Event Saved Successfully");
+      clearForm();
+      loadEvents();
+    });
+}
+
+function getStatus(dateString){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const eventDate = new Date(dateString);
+  if(eventDate >= today){
+    return '<span class="status upcoming">Upcoming</span>';
+  }
+  return '<span class="status ended">Ended</span>';
+}
+
+function loadEvents(){
+  fetch(SCRIPT_URL + "?action=get")
+    .then(r=>r.json())
+    .then(data=>{
+      allEvents = data;
+      renderEvents(data);
+    });
+}
+
+function renderEvents(data){
+  if (!data || data.length === 0) {
+    document.getElementById("eventsTable").innerHTML = '<div class="empty-events">No events found</div>';
+    return;
+  }
+  let html = "";
+  data.forEach((event,index)=>{
+    html += `
+<div class="event-item">
+<div class="event-summary" onclick="this.parentElement.classList.toggle('expanded')">
+<img class="event-thumb" src="${event.image}" onerror="this.src='https://via.placeholder.com/60x60'">
+<div class="event-summary-info">
+<div class="event-summary-name">${escapeHtml(event.name)}</div>
+<div class="event-summary-meta">${escapeHtml(event.date)} • ${escapeHtml(event.venue)}</div>
+</div>
+${getStatus(event.date)}
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+</div>
+<div class="event-details">
+<div class="detail-grid">
+<div class="detail-item"><span class="detail-label">Type</span><span class="detail-value">${escapeHtml(event.type)}</span></div>
+<div class="detail-item"><span class="detail-label">Time</span><span class="detail-value">${escapeHtml(event.time)}</span></div>
+<div class="detail-item"><span class="detail-label">Single</span><span class="detail-value">K${event.single}</span></div>
+<div class="detail-item"><span class="detail-label">Double</span><span class="detail-value">K${event.double}</span></div>
+<div class="detail-item"><span class="detail-label">VIP</span><span class="detail-value">K${event.vip}</span></div>
+</div>
+${event.description ? `<p class="event-description">${escapeHtml(event.description)}</p>` : ""}
+<div class="actions">
+<button class="edit-btn" onclick='event.stopPropagation(); editEvent(${JSON.stringify(event)},${index+2})'>Edit</button>
+<button class="delete-btn" onclick="event.stopPropagation(); deleteEvent(${index+2})">Delete</button>
+</div>
+</div>
+</div>`;
+  });
+  document.getElementById("eventsTable").innerHTML = html;
+}
+
+function editEvent(event,row){
+  editingRow = row;
+  document.getElementById("ev-name").value = event.name;
+  document.getElementById("ev-type").value = event.type;
+  document.getElementById("ev-date").value = event.date;
+  document.getElementById("ev-time").value = event.time;
+  document.getElementById("ev-venue").value = event.venue;
+  document.getElementById("ev-image").value = event.image;
+  document.getElementById("ev-description").value = event.description;
+  document.getElementById("ev-single").value = event.single;
+  document.getElementById("ev-double").value = event.double;
+  document.getElementById("ev-vip").value = event.vip;
+  document.getElementById("ev-saveBtn").innerText = "Update Event";
+  document.getElementById("view-events").scrollIntoView({behavior:"smooth"});
+}
+
+function deleteEvent(row){
+  if(!confirm("Are you sure you want to delete this event?")) return;
+  fetch(SCRIPT_URL,{ method:"POST", body:JSON.stringify({ action:"delete", row:row }) })
+    .then(r=>r.json())
+    .then(()=>{
+      alert("Event Deleted");
+      loadEvents();
+    });
+}
+
+function filterEvents(){
+  const search = document.getElementById("ev-search").value.toLowerCase();
+  const filtered = allEvents.filter(event =>
+    event.name.toLowerCase().includes(search) ||
+    event.type.toLowerCase().includes(search) ||
+    event.venue.toLowerCase().includes(search)
+  );
+  renderEvents(filtered);
+}
+
+loadEvents();
+
+/* ============ SCANNER MODULE ============ */
+let scanner;
+let isScanning = false;
+let cooldownActive = false;
+let scanHistory = [];
+let stats = { total:0, valid:0, invalid:0 };
+
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyo5Wuvl5ElgiheYhgghUaRkKNYSXPrhUNhl8m-_e5ZPfpTtHcJTpC7nbTc7UCxbht1/exec";
+
+function loadHistory(){
+  const saved = localStorage.getItem('ticketScanHistory');
+  if (saved) {
+    scanHistory = JSON.parse(saved);
+    updateStats();
+    renderHistory();
+  }
+}
+
+function saveHistory(){
+  localStorage.setItem('ticketScanHistory', JSON.stringify(scanHistory));
+  updateStats();
+  renderHistory();
+}
+
+function updateStats(){
+  stats.total = scanHistory.length;
+  stats.valid = scanHistory.filter(h => h.status === 'VALID').length;
+  stats.invalid = scanHistory.filter(h => h.status !== 'VALID').length;
+  document.getElementById('totalScans').textContent = stats.total;
+  document.getElementById('validScans').textContent = stats.valid;
+  document.getElementById('invalidScans').textContent = stats.invalid;
+  document.getElementById('historyCount').textContent = stats.total + ' record' + (stats.total !== 1 ? 's' : '');
+}
+
+function addToHistory(data, status, code){
+  const historyItem = {
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    time: new Date().toLocaleTimeString(),
+    date: new Date().toLocaleDateString(),
+    status: status,
+    code: code,
+    fullName: data.fullName || 'Unknown',
+    eventName: data.eventName || 'N/A',
+    ticketType: data.ticketType || 'N/A'
+  };
+  scanHistory.unshift(historyItem);
+  if (scanHistory.length > 50) scanHistory.pop();
+  saveHistory();
+}
+
+function renderHistory(){
+  const historyList = document.getElementById('historyList');
+  if (scanHistory.length === 0) {
+    historyList.innerHTML = '<div class="empty-history">No scans yet</div>';
+    return;
+  }
+  historyList.innerHTML = scanHistory.map(item => `
+<div class="history-item">
+<div class="history-info">
+<div class="history-name">${escapeHtml(item.fullName)}</div>
+<div class="history-time">${item.time} - ${item.date}</div>
+</div>
+<div class="history-badge badge-${item.status === 'VALID' ? 'valid' : (item.status === 'USED' ? 'used' : 'invalid')}">
+${item.status === 'VALID' ? 'Valid' : (item.status === 'USED' ? 'Used' : 'Invalid')}
+</div>
+</div>`).join('');
+}
+
+function clearHistory(){
+  if (confirm('Clear all scan history?')) {
+    scanHistory = [];
+    saveHistory();
+    updateStats();
+    renderHistory();
+  }
+}
+
+function showResult(data, status){
+  const resultCard = document.getElementById('resultCard');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultDetails = document.getElementById('resultDetails');
+  resultCard.style.display = 'block';
+
+  if (status === 'VALID') {
+    resultCard.className = 'result-card result-valid';
+    resultTitle.innerHTML = 'Ticket Validated';
+    resultDetails.innerHTML = `
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="detail-label">Ticket Holder</span><span class="detail-value">${escapeHtml(data.fullName)}</span></div>
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H4v12h16v-4M12 2v20M2 12h4M18 12h4"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg><span class="detail-label">Event</span><span class="detail-value">${escapeHtml(data.eventName)}</span></div>
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="detail-label">Date & Time</span><span class="detail-value">${escapeHtml(data.eventDate)} at ${escapeHtml(data.eventTime)}</span></div>
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="detail-label">Venue</span><span class="detail-value">${escapeHtml(data.venue)}</span></div>
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg><span class="detail-label">Ticket Type</span><span class="detail-value">${escapeHtml(data.ticketType)}</span></div>`;
+  } else if (status === 'USED') {
+    resultCard.className = 'result-card result-used';
+    resultTitle.innerHTML = 'Ticket Already Used';
+    resultDetails.innerHTML = `
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="detail-label">Message</span><span class="detail-value">This ticket was already scanned on ${data.usedTime || 'an earlier date'}</span></div>`;
+  } else {
+    resultCard.className = 'result-card result-invalid';
+    resultTitle.innerHTML = 'Invalid Ticket';
+    resultDetails.innerHTML = `
+<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="detail-label">Message</span><span class="detail-value">The ticket code was not found in the system</span></div>`;
+  }
+}
+
+function hideResult(){
+  document.getElementById('resultCard').style.display = 'none';
+}
+
+function updateScanStatus(text, isActive = false, isCooldown = false){
+  const statusText = document.getElementById('statusText');
+  statusText.textContent = text;
+  const statusEl = document.querySelector('#view-scanner .scan-status');
+  if (isActive) {
+    statusEl.classList.add('status-active');
+    statusEl.classList.remove('status-cooldown');
+  } else if (isCooldown) {
+    statusEl.classList.add('status-cooldown');
+    statusEl.classList.remove('status-active');
+  } else {
+    statusEl.classList.remove('status-active');
+    statusEl.classList.remove('status-cooldown');
+  }
+}
+
+async function startCooldown(seconds){
+  cooldownActive = true;
+  const cooldownContainer = document.getElementById('cooldownContainer');
+  const progressFill = document.getElementById('progressFill');
+  const cooldownText = document.getElementById('cooldownText');
+  cooldownContainer.style.display = 'block';
+  for (let i = seconds; i >= 0; i--) {
+    const progressPercent = ((seconds - i) / seconds) * 100;
+    progressFill.style.width = `${progressPercent}%`;
+    cooldownText.textContent = `⏱️ Next scan in ${i} second${i !== 1 ? 's' : ''}`;
+    updateScanStatus(`Cooldown: ${i}s`, false, true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  cooldownContainer.style.display = 'none';
+  cooldownActive = false;
+  updateScanStatus('Ready to scan', true);
+}
+
+async function startScan(){
+  if (scanner && isScanning) {
+    updateScanStatus('Scanner already running', false);
+    return;
+  }
+  if (cooldownActive) {
+    updateScanStatus('Please wait for cooldown', false, true);
+    return;
+  }
+  if (scanner) {
+    try { await scanner.stop(); await scanner.clear(); } catch(e) {}
+    scanner = null;
+  }
+  const readerElement = document.getElementById("reader");
+  readerElement.innerHTML = "";
+  scanner = new Html5Qrcode("reader");
+  const config = { fps: 10, qrbox: { width: 280, height: 280 }, aspectRatio: 1.0 };
+  updateScanStatus('Initializing camera...', true);
+  try {
+    await scanner.start({ facingMode: "environment" }, config, onScanSuccess, (error) => {});
+    isScanning = true;
+    updateScanStatus('Scanner active - Ready', true);
+    document.getElementById('startBtn').disabled = true;
+    document.getElementById('stopBtn').disabled = false;
+  } catch(err) {
+    updateScanStatus('Camera error: ' + err.message, false);
+    alert("Camera error: " + err.message);
+  }
+}
+
+async function onScanSuccess(decodedText){
+  if (cooldownActive) return;
+  let rawCode = decodedText.trim();
+  let code = rawCode;
+  if (code.toUpperCase().startsWith("RECEIPT:")) {
+    code = code.substring(8).trim();
+  } else if (code.toUpperCase().startsWith("RECEIPT: ")) {
+    code = code.substring(9).trim();
+  }
+  if (scanner && isScanning) {
+    try { await scanner.pause(); updateScanStatus('Processing...', false); } catch(e) {}
+  }
+  await verifyTicket(code);
+  if (scanner && isScanning) {
+    await startCooldown(8);
+    try { await scanner.resume(); updateScanStatus('Scanner active - Ready', true); } catch(e) {}
+  }
+}
+
+async function verifyTicket(code){
+  hideResult();
+  updateScanStatus('Verifying ticket...', false);
+  const url = APPS_SCRIPT_URL + "?code=" + encodeURIComponent(code);
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    const data = await response.json();
+    if (data.status === "VALID") {
+      showResult(data, 'VALID');
+      addToHistory(data, 'VALID', code);
+      updateScanStatus('Valid ticket!', false);
+    } else if (data.status === "USED") {
+      showResult(data, 'USED');
+      addToHistory(data, 'USED', code);
+      updateScanStatus('Ticket already used', false);
+    } else {
+      showResult({}, 'INVALID');
+      addToHistory({ fullName: 'Unknown', eventName: 'N/A' }, 'INVALID', code);
+      updateScanStatus('Invalid ticket', false);
+    }
+  } catch(error) {
+    showResult({}, 'INVALID');
+    addToHistory({ fullName: 'Error', eventName: 'N/A' }, 'INVALID', code);
+    updateScanStatus('Connection error', false);
+  }
+}
+
+async function stopScan(){
+  if (scanner && isScanning) {
+    try { await scanner.stop(); await scanner.clear(); } catch(e) {}
+    isScanning = false;
+    scanner = null;
+    cooldownActive = false;
+    document.getElementById('cooldownContainer').style.display = 'none';
+    updateScanStatus('Scanner stopped', false);
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('stopBtn').disabled = true;
+  }
+}
+
+function escapeHtml(str){
+  if (!str) return 'N/A';
+  return String(str).replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+window.addEventListener('beforeunload', () => {
+  if (scanner && isScanning) {
+    scanner.stop().catch(e => {});
+  }
+});
+
+loadHistory();
+updateScanStatus('Ready to scan', false);
+</script>
+
+</body>
+</html>
